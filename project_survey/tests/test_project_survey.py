@@ -15,10 +15,16 @@ class TestProjectSurvey(TransactionCase):
             'title': 'Customer Feedback Survey',
         })
 
-        # Create a stage with survey
+        # Create a project
+        self.project = self.env['project.project'].create({
+            'name': 'Test Project',
+        })
+
+        # Create a stage with survey linked to project
         self.stage_with_survey = self.ProjectStage.create({
             'name': 'Done',
             'survey_id': self.survey.id,
+            'project_ids': [(4, self.project.id)],
         })
 
         # Create a customer
@@ -30,6 +36,7 @@ class TestProjectSurvey(TransactionCase):
         # Create a task
         self.task = self.ProjectTask.create({
             'name': 'Test Task',
+            'project_id': self.project.id,
             'stage_id': self.stage_with_survey.id,
             'partner_id': self.customer.id,
         })
@@ -124,5 +131,5 @@ class TestProjectSurvey(TransactionCase):
         # In test mode, message_post might not commit but it creates message records?
         # Yes, message_ids should contain it.
         messages = self.task.message_ids
-        self.assertTrue(messages.filtered(lambda m: "has been completed" in m.body), "Should create a chatter message")
+        self.assertTrue(messages.filtered(lambda m: "has completed" in m.body), "Should create a chatter message")
 
