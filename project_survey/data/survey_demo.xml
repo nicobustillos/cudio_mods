@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Survey: Customer Satisfaction -->
+        <record id="survey_project_satisfaction" model="survey.survey">
+            <field name="title">Project Task Satisfaction Survey</field>
+            <field name="access_mode">public</field>
+            <field name="users_can_go_back" eval="True"/>
+            <field name="users_login_required" eval="False"/>
+            <field name="scoring_type">scoring_with_answers</field>
+            <field name="questions_layout">one_page</field>
+        </record>
+
+        <!-- Page 1: Feedback -->
+        <record id="survey_page_feedback" model="survey.question">
+            <field name="title">Feedback</field>
+            <field name="survey_id" ref="survey_project_satisfaction"/>
+            <field name="sequence">1</field>
+            <field name="is_page" eval="True"/>
+            <field name="question_type" eval="False"/>
+        </record>
+
+        <!-- Question 1: Satisfaction -->
+        <record id="survey_question_satisfaction" model="survey.question">
+            <field name="survey_id" ref="survey_project_satisfaction"/>
+            <field name="title">How satisfied are you with the resolution of this task?</field>
+            <field name="question_type">simple_choice</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="survey_answer_vs" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_satisfaction"/>
+            <field name="value">Very Satisfied</field>
+            <field name="sequence">1</field>
+            <field name="answer_score">10</field>
+        </record>
+        <record id="survey_answer_s" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_satisfaction"/>
+            <field name="value">Satisfied</field>
+             <field name="sequence">2</field>
+            <field name="answer_score">7.5</field>
+        </record>
+        <record id="survey_answer_n" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_satisfaction"/>
+            <field name="value">Neutral</field>
+             <field name="sequence">3</field>
+            <field name="answer_score">5</field>
+        </record>
+        <record id="survey_answer_d" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_satisfaction"/>
+            <field name="value">Dissatisfied</field>
+             <field name="sequence">4</field>
+            <field name="answer_score">2.5</field>
+        </record>
+         <record id="survey_answer_vd" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_satisfaction"/>
+            <field name="value">Very Dissatisfied</field>
+             <field name="sequence">5</field>
+            <field name="answer_score">0</field>
+        </record>
+
+
+        <!-- Question 2: Timeliness -->
+        <record id="survey_question_time" model="survey.question">
+           <field name="survey_id" ref="survey_project_satisfaction"/>
+            <field name="title">Was the task completed on time?</field>
+            <field name="question_type">simple_choice</field>
+            <field name="sequence">3</field>
+        </record>
+         <record id="survey_answer_yes" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_time"/>
+            <field name="value">Yes</field>
+            <field name="answer_score">10</field>
+        </record>
+        <record id="survey_answer_no" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_time"/>
+            <field name="value">No</field>
+            <field name="answer_score">0</field>
+        </record>
+
+        <!-- Question 3: Comments -->
+        <record id="survey_question_comments" model="survey.question">
+           <field name="survey_id" ref="survey_project_satisfaction"/>
+            <field name="title">Do you have any additional feedback?</field>
+            <field name="question_type">text_box</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record id="survey_question_followup" model="survey.question">
+           <field name="survey_id" ref="survey_project_satisfaction"/>
+            <field name="title">Would you like to request a follow-up?</field>
+            <field name="question_type">simple_choice</field>
+            <field name="sequence">5</field>
+        </record>
+        <record id="survey_answer_followup_no" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_followup"/>
+            <field name="value">No</field>
+            <field name="answer_score">10</field>
+        </record>
+        <record id="survey_answer_call" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_followup"/>
+            <field name="value">Call</field>
+            <field name="answer_score">0</field>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+        </record>
+        <record id="survey_answer_email" model="survey.question.answer">
+            <field name="question_id" ref="survey_question_followup"/>
+            <field name="value">Email</field>
+            <field name="answer_score">0</field>
+            <field name="activity_type_id" ref="mail.mail_activity_data_email"/>
+        </record>
+        
+
+
+        <!-- Project Stage Demo -->
+        <record id="project_stage_customer_review" model="project.task.type">
+            <field name="name">Customer Review</field>
+            <field name="sequence">100</field>
+            <field name="survey_id" ref="survey_project_satisfaction"/>
+        </record>
+    </data>
+</odoo>

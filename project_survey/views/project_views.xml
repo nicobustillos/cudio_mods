@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Configure survey at Stage -->
+    <record id="task_type_edit_project_survey" model="ir.ui.view">
+        <field name="name">project.task.type.form.project.survey</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_edit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='group_customer_rating']" position="before">
+                <group string="Survey Integration">
+                    <field name="survey_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_form2_project_survey" model="ir.ui.view">
+        <field name="name">project.task.form.project.survey</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <!-- Send Survey button in header -->
+            <xpath expr="//header" position="inside">
+                <field name="stage_id" invisible="1"/>
+                <button name="action_send_survey" string="Send Survey" type="object" class="oe_highlight" 
+                    invisible="not stage_id or not survey_id"/>
+            </xpath>
+
+            <!-- Smart Button to access returned results -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_survey_results" type="object" class="oe_stat_button" icon="fa-list-alt"
+                    invisible="survey_input_count == 0">
+                    <field name="survey_input_count" widget="statinfo" string="Surveys"/>
+                </button>
+                <button name="action_view_survey_results" type="object" class="oe_stat_button" icon=""
+                    invisible="survey_input_count == 0.0">
+                    <i class="fa fa-fw o_button_icon fa-smile-o text-success" invisible="survey_avg_score &lt;= 80.0" title="Satisfied"/>
+                    <i class="fa fa-fw o_button_icon fa-meh-o text-warning" invisible="survey_avg_score &gt; 80.0 or survey_avg_score &lt; 20.0" title="Neutral"/>
+                    <i class="fa fa-fw o_button_icon fa-frown-o text-danger" invisible="survey_avg_score &gt;= 20.0" title="Dissatisfied"/>
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value"><field name="survey_avg_score" nolabel="1"/></span>
+                        <span class="o_stat_text">Survey score</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_kanban_project_survey" model="ir.ui.view">
+        <field name="name">project.task.kanban.project.survey</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='rating_avg']" position="after">
+                <field name="survey_avg_score"/>
+                <field name="survey_input_count"/>
+            </xpath>
+            <xpath expr="//footer//field[@name='activity_ids']" position="after">
+                <t t-if="record.survey_input_count.raw_value > 0">
+                    <span class="fa fa-fw fa-smile-o text-success ms-1" t-if="record.survey_avg_score.raw_value &gt;= 80.0" title="Survey Avg: Happy" role="img" aria-label="Happy"/>
+                    <span class="fa fa-fw fa-meh-o text-warning ms-1" t-elif="record.survey_avg_score.raw_value &gt;= 20.0" title="Survey Avg: Neutral" role="img" aria-label="Neutral"/>
+                    <span class="fa fa-fw fa-frown-o text-danger ms-1" t-else="" title="Survey Avg: Unhappy" role="img" aria-label="Unhappy"/>
+                </t>
+            </xpath>
+        </field>
+    </record>
+</odoo>
